@@ -1,6 +1,7 @@
 <template>
   <div @click="$emit('select', event.id)" :style="{padding:'5px', cursor:'pointer', background:selected?'#eee':'#fff'}">
-    {{ event.title }}
+    <span v-if="event.title.length > 0">{{ event.title }}</span>
+    <span v-else style="color: gray;">(제목 없음)</span>
   </div>
 </template>
 

@@ -1,9 +1,9 @@
 <template>
-  <div class="editor" style="flex: 1; padding: 10px; overflow: auto">
-    <h3>이벤트 편집</h3>
+  <div class="editor" style="flex: 1; padding: 10px; overflow: auto" v-if="currentEvent">
+    <input class="title" v-model="currentEvent.title" placeholder="(제목 없음)">
     <div v-if="currentEvent">
       <button @click="addNode">새 문단 추가</button>
-      <NodeGraph :nodes="currentEvent.nodes" />
+      <NodeGraph :event="currentEvent" />
       <NodeEditor v-if="selectedNode" :node="selectedNode" />
     </div>
     <div v-else>이벤트를 선택하세요</div>
@@ -31,3 +31,11 @@ const addNode = () => {
   if (currentEvent?.value) store.addNode(currentEvent.value.id);
 };
 </script>
+<style scoped>
+.title {
+  font-size: 1.2em;
+  font-weight: bold;
+  border: 0;
+  padding: 5px;
+}
+</style>

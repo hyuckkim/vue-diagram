@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="node in nodes" :key="node.id" style="margin-bottom:10px;">
+    <div v-for="node in event.nodes" :key="node.id" style="margin-bottom:10px;">
       <div @click="selectNode(node.id)" style="padding:5px; border:1px solid #aaa; cursor:pointer;">
         {{ node.text }}
       </div>
@@ -14,10 +14,10 @@
 </template>
 
 <script setup lang="ts">
-import { useEventStore, type EventNode } from '../stores/useEventStore'
+import { useEventStore, type Event } from '../stores/useEventStore'
 
 defineProps<{
-  nodes: EventNode[]
+  event: Event
 }>()
 const store = useEventStore()
 const selectNode = (id: string) => store.selectNode(id)
