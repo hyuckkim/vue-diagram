@@ -1,20 +1,15 @@
 <template>
-  <div>
-    <div v-for="node in event.nodes" :key="node.id" style="margin-bottom:10px;">
-      <div @click="selectNode(node.id)" style="padding:5px; border:1px solid #aaa; cursor:pointer;">
-        {{ node.title || '(제목 없음)' }}
-      </div>
-      <div v-if="node.next.length" style="margin-left:20px;">
-        <div v-for="nextId in node.next" :key="nextId">
-          {{ nextId }}
-        </div>
-      </div>
-    </div>
-  </div>
+  <NodeBlock
+    v-for="node in event.nodes"
+    :key="node.id"
+    :node="node"
+    :click="selectNode"
+    @select="selectNode(node.id)" />
 </template>
 
 <script setup lang="ts">
 import { useEventStore, type Event } from '../stores/useEventStore'
+import NodeBlock from './NodeBlock.vue';
 
 defineProps<{
   event: Event
