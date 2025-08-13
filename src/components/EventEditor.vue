@@ -2,7 +2,6 @@
   <div class="editor" style="flex: 1; padding: 10px; overflow: auto" v-if="currentEvent">
     <input class="title" v-model="currentEvent.title" placeholder="(제목 없음)">
     <div v-if="currentEvent">
-      <button @click="addNode">새 문단 추가</button>
       <NodeGraph :event="currentEvent" />
       <NodeEditor v-if="selectedNode" :node="selectedNode" />
     </div>
@@ -26,10 +25,6 @@ const currentEvent = computed(() =>
 const selectedNode = computed(() =>
   currentEvent.value?.nodes.find((n) => n.id === selectedNodeId.value)
 );
-
-const addNode = () => {
-  if (currentEvent?.value) store.addNode(currentEvent.value.id);
-};
 </script>
 <style scoped>
 .title {

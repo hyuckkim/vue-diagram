@@ -47,6 +47,17 @@ export const useEventStore = defineStore('event', () => {
     event.nodes.push({ id: nodeId, title: '새 문단', text: '', next: [] })
     selectedNodeId.value = nodeId
   }
+  const addChildNode = (parentNodeId: string, eventId: string) => {
+    const event = events.value.find(e => e.id === eventId)
+    if (!event) return
+    const parentNode = event.nodes.find(n => n.id === parentNodeId)
+    if (!parentNode) return
+    const childNodeId = `node-${event.nodes.length + 1}`
+    const newNode: EventNode = { id: childNodeId, title: '새 장', text: '', next: [] }
+    event.nodes.push(newNode)
+    parentNode.next.push(childNodeId)
+    selectedNodeId.value = childNodeId
+  }
 
   const updateNodeText = (eventId: string, nodeId: string, text: string) => {
     const event = events.value.find(e => e.id === eventId)
@@ -57,5 +68,5 @@ export const useEventStore = defineStore('event', () => {
 
   const selectNode = (nodeId: string) => selectedNodeId.value = nodeId
 
-  return { events, selectedEventId, selectedNodeId, addEvent, selectEvent, addNode, updateNodeText, selectNode }
+  return { events, selectedEventId, selectedNodeId, addEvent, selectEvent, addNode, addChildNode, updateNodeText, selectNode }
 })
