@@ -118,6 +118,9 @@ export const useEventStore = defineStore("event", () => {
     if (node) node.text = text;
   };
 
+  const getCurrentEvent = (): Event | undefined => {
+    return events.value.find((e) => e.id === selectedEventId.value);
+  }
   const getEventById = (id: string): Event | undefined => {
     return events.value.find((event) => event.id === id);
   };
@@ -138,12 +141,31 @@ export const useEventStore = defineStore("event", () => {
   const unselectNode = () => (selectedNodeId.value = null);
   const toggleNode = (nodeId: string) => (selectedNodeId.value = selectedNodeId.value === nodeId ? null : nodeId);
 
+  const removeNode = (eventId: string, nodeId: string) => {
+    const event = events.value.find((e) => e.id === eventId);
+    if (!event) return;
+
+    // Remove the node from the event's nodes array
+    event.nodes = event.nodes.filter((node) => node.id !== nodeId);
+
+    // Remove references to the node in other nodes' next arrays
+    event.nodes.forEach((node) => {
+      node.next = node.next.filter((nextId) => nextId !== nodeId);
+    });
+
+    // Unselect the node if it was selected
+    if (selectedNodeId.value === nodeId) {
+      selectedNodeId.value = null;
+    }
+  };
+
   return {
     events,
     selectedEventId,
     selectedNodeId,
     addEvent,
     selectEvent,
+    getCurrentEvent,
     addNode,
     addChildNode,
     updateNodeText,
@@ -153,5 +175,6 @@ export const useEventStore = defineStore("event", () => {
     getEventById,
     getNodeById,
     getCurrentNodeById,
+    removeNode,
   };
 });
