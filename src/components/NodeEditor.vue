@@ -11,8 +11,10 @@
         삭제
       </button>
     </div>
-    <textarea v-model="text" rows="3"></textarea>
-    <button class="save-button" @click="updateText">저장</button>
+    <div class="node-body">
+      <textarea v-model="text" rows="6" class="text-area"></textarea>
+      <button class="save-button" @click="updateText">저장</button>
+    </div>
   </div>
 </template>
 
@@ -42,6 +44,18 @@ const removeNode = () => store.removeNode(store.selectedEventId, node.id)
 .node-header {
   display: flex;
   align-items: center;
+}
+
+.node-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.text-area {
+  width: 100%;
+  resize: none;
 }
 
 .title {
@@ -91,6 +105,7 @@ const removeNode = () => store.removeNode(store.selectedEventId, node.id)
   padding: 5px 10px;
   cursor: pointer;
   font-size: 0.8em;
+  align-self: flex-end;
 }
 
 .save-button:active {
