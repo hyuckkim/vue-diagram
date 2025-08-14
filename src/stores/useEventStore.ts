@@ -22,6 +22,14 @@ function generateLightColor() {
   return color;
 }
 
+function generateGUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export const useEventStore = defineStore("event", () => {
   const events: Ref<Event[]> = ref([
     {
@@ -64,14 +72,16 @@ export const useEventStore = defineStore("event", () => {
   const selectedNodeId: Ref<string | null> = ref(null);
 
   const addEvent = () => {
-    const id = `event-${events.value.length + 1}`;
-    events.value.push({ id, title: `새 이벤트`, nodes: [{
-      id: `node-1`,
-      title: "새 장",
-      text: "",
-      next: [],
-      color: generateLightColor(), // Default color for new nodes
-    }] });
+    const id = generateGUID();
+    events.value.push({ id, title: `새 이벤트`, nodes: [
+      {
+        id: generateGUID(),
+        title: "새 장",
+        text: "",
+        next: [],
+        color: generateLightColor(), // Default color for new nodes
+      },
+    ] });
     selectedEventId.value = id;
   };
 
@@ -83,7 +93,7 @@ export const useEventStore = defineStore("event", () => {
   const addNode = (eventId: string) => {
     const event = events.value.find((e) => e.id === eventId);
     if (!event) return;
-    const nodeId = `node-${event.nodes.length + 1}`;
+    const nodeId = generateGUID();
     event.nodes.push({
       id: nodeId,
       title: "새 장",
@@ -98,7 +108,7 @@ export const useEventStore = defineStore("event", () => {
     if (!event) return;
     const parentNode = event.nodes.find((n) => n.id === parentNodeId);
     if (!parentNode) return;
-    const childNodeId = `node-${event.nodes.length + 1}`;
+    const childNodeId = generateGUID();
     const newNode: EventNode = {
       id: childNodeId,
       title: "새 장",
