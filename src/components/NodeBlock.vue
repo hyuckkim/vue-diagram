@@ -2,12 +2,13 @@
   <div
     class="node"
     @click="click(node.id)"
-    :style="{ backgroundColor: selected ? '#e0f7fa' : '#fff' }"
+    :style="{ borderWidth: selected ? '3px' : '1px', borderColor: node.color || '#ccc' }"
   >
     {{ node.title || "(제목 없음)" }}
     <div class="childs">
       <div
         class="child"
+        :style="{ backgroundColor: idColor(next) }"
         v-for="next of node.next"
         @click.stop="click(next)"
       ></div>
@@ -16,7 +17,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { EventNode } from "../stores/useEventStore";
+import { useEventStore, type EventNode } from "../stores/useEventStore";
 
 defineProps<{
   selected?: boolean;
@@ -24,6 +25,8 @@ defineProps<{
   click: (id: string) => void;
   add: () => void;
 }>();
+const store = useEventStore();
+const idColor = (id: string) => store.getCurrentNodeById(id)?.color || "#ccc";
 </script>
 <style scoped>
 .node {
@@ -36,30 +39,6 @@ defineProps<{
 }
 .childs {
   display: flex;
-}
-.child:nth-child(1) {
-  background-color: #ffadad; /* Pastel Red */
-}
-.child:nth-child(2) {
-  background-color: #ffd6a5; /* Pastel Orange */
-}
-.child:nth-child(3) {
-  background-color: #fdffb6; /* Pastel Yellow */
-}
-.child:nth-child(4) {
-  background-color: #caffbf; /* Pastel Green */
-}
-.child:nth-child(5) {
-  background-color: #9bf6ff; /* Pastel Blue */
-}
-.child:nth-child(6) {
-  background-color: #a0c4ff; /* Pastel Light Blue */
-}
-.child:nth-child(7) {
-  background-color: #bdb2ff; /* Pastel Purple */
-}
-.child:nth-child(8) {
-  background-color: #ffc6ff; /* Pastel Pink */
 }
 .addchild {
   border: #333 1px solid;

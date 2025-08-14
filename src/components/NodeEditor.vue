@@ -1,6 +1,9 @@
 <template>
   <div style="margin-top:20px; border-top:1px solid #ccc; padding-top:10px;">
-    <input class="title" v-model="node.title" placeholder="문단 제목" style="width:100%; margin-bottom:10px;">
+    <div style="display: flex;">
+      <input class="title" v-model="node.title" placeholder="문단 제목" style="width:100%; margin-bottom:10px;" />
+      <input class="color" type="color" v-model="node.color" style="width:50px; margin-left:10px;" />
+    </div>
     <textarea v-model="text" rows="3" style="width:100%"></textarea>
     <button @click="updateText">저장</button>
   </div>
