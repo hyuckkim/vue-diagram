@@ -118,8 +118,6 @@ export const useEventStore = defineStore("event", () => {
     if (node) node.text = text;
   };
 
-  const selectNode = (nodeId: string) => (selectedNodeId.value = nodeId);
-
   const getEventById = (id: string): Event | undefined => {
     return events.value.find((event) => event.id === id);
   };
@@ -135,6 +133,11 @@ export const useEventStore = defineStore("event", () => {
     return event?.nodes.find((n) => n.id === nodeId);
   };
 
+
+  const selectNode = (nodeId: string) => (selectedNodeId.value = nodeId);
+  const unselectNode = () => (selectedNodeId.value = null);
+  const toggleNode = (nodeId: string) => (selectedNodeId.value = selectedNodeId.value === nodeId ? null : nodeId);
+
   return {
     events,
     selectedEventId,
@@ -145,6 +148,8 @@ export const useEventStore = defineStore("event", () => {
     addChildNode,
     updateNodeText,
     selectNode,
+    unselectNode,
+    toggleNode,
     getEventById,
     getNodeById,
     getCurrentNodeById,

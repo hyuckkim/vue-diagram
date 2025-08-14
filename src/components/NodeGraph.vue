@@ -19,7 +19,7 @@ defineProps<{
   event: Event
 }>()
 const store = useEventStore()
-const selectNode = (id: string) => store.selectNode(id)
+const selectNode = (id: string) => store.toggleNode(id)
 </script>
 <style scoped>
 .graph {
