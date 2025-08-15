@@ -1,19 +1,10 @@
 <template>
   <div class="graph" @mousedown="onMouseDown">
-    <svg class="lines" width="100%" height="100%" style="position:absolute;top:0;left:0;z-index:0;pointer-events:auto">
-      <line
-        v-for="line in lines"
-        :key="line.id"
-        :x1="line.x1"
-        :y1="line.y1"
-        :x2="line.x2"
-        :y2="line.y2"
-        :stroke="line.id === selectedLine ? '#ff5252' : '#888'"
-        stroke-width="4"
-        @click.stop="selectLine(line.id)"
-        style="cursor:pointer;opacity:0.7;"
-      />
-    </svg>
+    <ArrowLines
+      :arrows="lines"
+      :width="'100%'"
+      :height="'100%'"
+    />
     <NodeBlock
       v-for="node in nodesWithPos"
       :key="node.id"
@@ -34,6 +25,7 @@ import { ref, computed } from "vue";
 import { useEventStore, type Event, type EventNode } from "../stores/useEventStore";
 import NodeBlock from "./NodeBlock.vue";
 import { getDagreLayout } from "../utils/dagreLayout";
+import ArrowLines from "./ArrowLines.vue";
 
 const { event } = defineProps<{ event: Event }>();
 const store = useEventStore();
@@ -43,8 +35,6 @@ const selectNode = (id: string) => store.toggleNode(id);
 const panOffset = ref({ x: 0, y: 0 });
 const dragging = ref(false);
 const dragStart = ref({ x: 0, y: 0 });
-
-const selectedLine = ref<string | null>(null);
 
 const NODE_W = 220;
 const NODE_H = 60;
@@ -117,10 +107,6 @@ const lines = computed(() => {
   });
   return result;
 });
-
-function selectLine(id: string) {
-  selectedLine.value = id;
-}
 </script>
 <style scoped>
 .graph {
