@@ -2,7 +2,13 @@
   <div
     class="node"
     @click="click(node.id)"
-    :style="{ borderWidth: selected ? '3px' : '1px', borderColor: node.color || '#ccc' }"
+    :style="{
+      borderWidth: selected ? '3px' : '1px',
+      borderColor: node.color || '#ccc',
+      position: 'absolute',
+      left: x + 'px',
+      top: y + 'px'
+    }"
   >
     {{ node.title || "(제목 없음)" }}
     <div class="childs">
@@ -24,6 +30,8 @@ defineProps<{
   node: EventNode;
   click: (id: string) => void;
   add: () => void;
+  x?: number;
+  y?: number;
 }>();
 const store = useEventStore();
 const idColor = (id: string) => store.getCurrentNodeById(id)?.color || "#ccc";
@@ -36,6 +44,7 @@ const idColor = (id: string) => store.getCurrentNodeById(id)?.color || "#ccc";
   margin: 5px;
   cursor: pointer;
   background-color: #f9f9f9;
+  box-sizing: border-box;
 }
 .childs {
   display: flex;

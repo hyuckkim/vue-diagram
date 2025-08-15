@@ -27,6 +27,13 @@ const selectedNode = computed(() =>
 );
 </script>
 <style scoped>
+.editor,.editor>div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
 .title {
   font-size: 1.2em;
   font-weight: bold;

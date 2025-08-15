@@ -3,9 +3,9 @@
     <div class="node-header">
       <input class="title" v-model="node.title" placeholder="문단 제목" />
       <input class="color" type="color" v-model="node.color" />
-      <button 
-        class="remove-button" 
-        @click="removeNode" 
+      <button
+        class="remove-button"
+        @click="removeNode"
         :disabled="!removeEnabled"
       >
         삭제
@@ -19,19 +19,21 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { useEventStore } from '../stores/useEventStore'
-import { type EventNode } from '../stores/useEventStore'
+import { computed, ref } from "vue";
+import { useEventStore } from "../stores/useEventStore";
+import { type EventNode } from "../stores/useEventStore";
 
-const { node } = defineProps<{ node: EventNode }>()
-const store = useEventStore()
+const { node } = defineProps<{ node: EventNode }>();
+const store = useEventStore();
 
-const text = ref(node.text)
-watch(() => node.text, (val) => text.value = val)
+const text = ref(node.text);
 
-const removeEnabled = computed(() => store.getCurrentEvent()?.nodes.length !== 1)
-const updateText = () => store.updateNodeText(store.selectedEventId, node.id, text.value)
-const removeNode = () => store.removeNode(store.selectedEventId, node.id)
+const removeEnabled = computed(
+  () => store.getCurrentEvent()?.nodes.length !== 1
+);
+const updateText = () =>
+  store.updateNodeText(store.selectedEventId, node.id, text.value);
+const removeNode = () => store.removeNode(store.selectedEventId, node.id);
 </script>
 
 <style scoped>
