@@ -4,6 +4,7 @@
     @click.stop="props.click(props.node.id)"
     :style="{
       borderWidth: props.selected ? '5px' : '3px',
+      paddingLeft: props.selected ? '8px' : '10px',
       borderColor: props.node.color || '#ccc',
       position: 'absolute',
       left: (props.x ?? 0) + 'px',
@@ -53,7 +54,6 @@ const idColor = (id: string) => store.getCurrentNodeById(id)?.color || "#ccc";
   margin: 5px;
   cursor: pointer;
   background-color: #f9f9f9;
-  box-sizing: border-box;
   max-width: 200px;
   max-height: 100px;
   display: flex;

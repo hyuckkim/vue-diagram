@@ -1,5 +1,5 @@
 <template>
-  <div class="graph" @mousedown="onMouseDown">
+  <div class="graph" @mousedown="onMouseDown" @click="unselect">
     <ArrowLines :arrows="lines" :width="'100%'" :height="'100%'" />
     <NodeBlock
       v-for="node in nodesWithPos"
@@ -58,9 +58,10 @@ const eventEnd = () => {
   window.removeEventListener("mousemove", onMouseMove);
   window.removeEventListener("mouseup", eventEnd);
   window.removeEventListener("mouseleave", eventEnd);
-
-  store.unselectItem();
 };
+const unselect = () => {
+  store.unselectItem();
+}
 
 function getNodeRelations(nodes: StoryNode[]) {
   const childrenMap: Record<string, string[]> = {};
