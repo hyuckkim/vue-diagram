@@ -1,5 +1,5 @@
 import dagre from "@dagrejs/dagre";
-import type { EventArrow, EventNode } from "../stores/useEventStore";
+import type { EventNode } from "../stores/useEventStore";
 
 export interface DagreLayoutOptions {
   nodeWidth?: number;
@@ -7,6 +7,7 @@ export interface DagreLayoutOptions {
   rankdir?: "LR" | "TB" | "RL" | "BT";
   nodesep?: number;
   ranksep?: number;
+  align?: "UL" | "UR" | "DL" | "DR";
 }
 
 export function getDagreLayout(
@@ -19,17 +20,19 @@ export function getDagreLayout(
     rankdir = "LR",
     nodesep = 20,
     ranksep = 40,
+    align = "UL",
   } = options;
   const g = new dagre.graphlib.Graph();
-  g.setGraph({ rankdir, nodesep, ranksep });
+  g.setGraph({ rankdir, nodesep, ranksep, align });
   g.setDefaultEdgeLabel(() => ({}));
   nodes.forEach((node) => {
     g.setNode(node.id, { width: nodeWidth, height: nodeHeight });
   });
   nodes.forEach((node) => {
     if (node.next && Array.isArray(node.next)) {
-      node.next.forEach((link: EventArrow) => {
-        g.setEdge(link.from, link.to);
+      node.next.forEach((nextId: string | { to: string }) => {
+        const toId = typeof nextId === "string" ? nextId : nextId.to;
+        g.setEdge(node.id, toId);
       });
     }
   });
