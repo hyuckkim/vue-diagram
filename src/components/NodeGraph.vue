@@ -7,12 +7,19 @@
       :node="node"
       :x="node.x"
       :y="node.y"
-      :children="node.children"
       :click="selectNode"
-      :add="() => store.addChildNode(node.id, story.id)"
       :selected="node.id === store.selectedItem?.id"
       @select="selectNode(node.id)"
-    />
+    >
+      <NodeChildSet
+        v-if="node.children && node.children.length > 0"
+        :node="node"
+        :children="node.children"
+        :click="selectNode"
+        :add="() => store.addChildNode(node.id, story.id)"
+        :selected="node.id === store.selectedItem?.id"
+      />
+    </NodeBlock>
   </div>
 </template>
 
@@ -26,6 +33,7 @@ import {
 import NodeBlock from "./NodeBlock.vue";
 import { getDagreLayout } from "../utils/dagreLayout";
 import ArrowLines from "./ArrowLines.vue";
+import NodeChildSet from "./NodeChildSet.vue";
 
 const { story } = defineProps<{ story: Story }>();
 const store = useStoryStore();
