@@ -17,7 +17,7 @@
 </template>
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import type { StoryArrow } from '../stores/useEventStore';
+import type { StoryArrow } from '../stores/useStoryStore';
 
 defineProps<{ arrow: StoryArrow }>();
 </script>

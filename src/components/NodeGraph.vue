@@ -1,10 +1,6 @@
 <template>
   <div class="graph" @mousedown="onMouseDown">
-    <ArrowLines
-      :arrows="lines"
-      :width="'100%'"
-      :height="'100%'"
-    />
+    <ArrowLines :arrows="lines" :width="'100%'" :height="'100%'" />
     <NodeBlock
       v-for="node in nodesWithPos"
       :key="node.id"
@@ -13,7 +9,7 @@
       :y="node.y"
       :children="node.children"
       :click="selectNode"
-      :add="() => store.addChildNode(node.id, event.id)"
+      :add="() => store.addChildNode(node.id, story.id)"
       :selected="node.id === store.selectedItem?.id"
       @select="selectNode(node.id)"
     />
@@ -22,13 +18,17 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { useEventStore, type Story, type StoryNode } from "../stores/useEventStore";
+import {
+  useStoryStore,
+  type Story,
+  type StoryNode,
+} from "../stores/useStoryStore";
 import NodeBlock from "./NodeBlock.vue";
 import { getDagreLayout } from "../utils/dagreLayout";
 import ArrowLines from "./ArrowLines.vue";
 
-const { event } = defineProps<{ event: Story }>();
-const store = useEventStore();
+const { story } = defineProps<{ story: Story }>();
+const store = useStoryStore();
 const selectNode = (id: string) => store.toggleNode(id);
 
 // 패닝 offset
@@ -40,6 +40,7 @@ const NODE_W = 220;
 const NODE_H = 60;
 
 const onMouseDown = (e: MouseEvent) => {
+  if (e.button !== 0) return; // 왼쪽 클릭만 동작
   dragging.value = true;
   dragStart.value.x = e.clientX - panOffset.value.x;
   dragStart.value.y = e.clientY - panOffset.value.y;
@@ -64,20 +65,20 @@ const eventEnd = () => {
 function getNodeRelations(nodes: StoryNode[]) {
   const childrenMap: Record<string, string[]> = {};
   nodes.forEach((node) => {
-    childrenMap[node.id] = node.next.map(link => link.to) ?? [];
+    childrenMap[node.id] = node.next.map((link) => link.to) ?? [];
   });
   return { childrenMap };
 }
 
 const nodesWithPos = computed(() => {
-  const layout = getDagreLayout(event.nodes, {
+  const layout = getDagreLayout(story.nodes, {
     nodeWidth: NODE_W,
     nodeHeight: NODE_H,
     rankdir: "LR",
     nodesep: 10,
     ranksep: 20,
   });
-  const { childrenMap } = getNodeRelations(event.nodes);
+  const { childrenMap } = getNodeRelations(story.nodes);
   return layout.map((node) => ({
     ...node,
     x: node.x + panOffset.value.x,
@@ -89,9 +90,19 @@ const nodesWithPos = computed(() => {
 // 연결선 정보 계산
 const lines = computed(() => {
   const nodes = nodesWithPos.value;
-  const nodeMap: Record<string, typeof nodes[0]> = {};
-  nodes.forEach((n) => { nodeMap[n.id] = n; });
-  const result: { from: string; to: string; x1: number; y1: number; x2: number; y2: number; id: string }[] = [];
+  const nodeMap: Record<string, (typeof nodes)[0]> = {};
+  nodes.forEach((n) => {
+    nodeMap[n.id] = n;
+  });
+  const result: {
+    from: string;
+    to: string;
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+    id: string;
+  }[] = [];
   nodes.forEach((node) => {
     node.children?.forEach((toId: string) => {
       const toNode = nodeMap[toId];

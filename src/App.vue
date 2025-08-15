@@ -1,11 +1,11 @@
 <template>
   <div class="app-container" style="display:flex; height:100vh">
-    <EventList />
-    <EventEditor />
+    <StoryList />
+    <StoryEditor />
   </div>
 </template>
 
 <script setup>
-import EventList from './components/EventList.vue'
-import EventEditor from './components/EventEditor.vue'
+import StoryList from './components/StoryList.vue'
+import StoryEditor from './components/StoryEditor.vue'
 </script>

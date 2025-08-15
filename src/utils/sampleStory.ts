@@ -1,8 +1,8 @@
-import { type Story } from "../stores/useEventStore"
-export const SampleEvent: Story =
+import { type Story } from "../stores/useStoryStore"
+export const SampleStory: Story =
 {
-  id: "event-1",
-  title: "첫 번째 이벤트",
+  id: "story-1",
+  title: "첫 번째 스토리",
   nodes: [
     {
       id: "node-1",
@@ -26,7 +26,7 @@ export const SampleEvent: Story =
     {
       id: "node-3",
       title: "오른쪽 길로 간다",
-      text: "누군가가, 오른 쪽이 옳은 쪽이라고 말했던 것 같습니다. 당신은 그가 옳은 말을 햇길 바라며 전진합니다.",
+      text: "누군가가, 오른 쪽이 옳은 쪽이라고 말했던 것 같습니다. 당신은 그가 옳은 말을 했길 바라며 전진합니다.",
       next: [
         { id: "node-3__node-4", from: "node-3", to: "node-4" },
       ],

@@ -1,5 +1,5 @@
 import dagre from "@dagrejs/dagre";
-import type { StoryNode } from "../stores/useEventStore";
+import type { StoryNode } from "../stores/useStoryStore";
 
 export interface DagreLayoutOptions {
   nodeWidth?: number;

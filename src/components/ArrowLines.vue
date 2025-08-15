@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue';
-import type { StoryArrow } from '../stores/useEventStore';
+import type { StoryArrow } from '../stores/useStoryStore';
 
 defineProps<{
   arrows: Array<StoryArrow & { x1: number; y1: number; x2: number; y2: number }>,

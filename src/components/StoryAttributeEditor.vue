@@ -1,24 +1,24 @@
 <template>
-  <div class="event-attribute-editor">
-    <h3>이벤트 속성 편집</h3>
+  <div class="story-attribute-editor">
+    <h3>스토리 속성 편집</h3>
     <label>
       제목
-      <input v-model="event.title" />
+      <input v-model="story.title" />
     </label>
     <label>
       ID
-      <input v-model="event.id" disabled />
+      <input v-model="story.id" disabled />
     </label>
   </div>
 </template>
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import type { Story } from '../stores/useEventStore';
+import type { Story } from '../stores/useStoryStore';
 
-defineProps<{ event: Story }>();
+defineProps<{ story: Story }>();
 </script>
 <style scoped>
-.event-attribute-editor {
+.story-attribute-editor {
   padding: 1em;
   background: #f7f7f7;
   border-radius: 8px;

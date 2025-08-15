@@ -1,7 +1,7 @@
 <template>
   <div
     class="node"
-    @click="props.click(props.node.id)"
+    @click.stop="props.click(props.node.id)"
     :style="{
       borderWidth: props.selected ? '5px' : '3px',
       borderColor: props.node.color || '#ccc',
@@ -29,7 +29,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useEventStore, type StoryNode } from "../stores/useEventStore";
+import { useStoryStore, type StoryNode } from "../stores/useStoryStore";
 
 const props = defineProps<{
   selected?: boolean;
@@ -42,7 +42,7 @@ const props = defineProps<{
   child?: string[];
 }>();
 
-const store = useEventStore();
+const store = useStoryStore();
 const idColor = (id: string) => store.getCurrentNodeById(id)?.color || "#ccc";
 </script>
 <style scoped>

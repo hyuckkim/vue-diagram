@@ -20,20 +20,20 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { useEventStore } from "../stores/useEventStore";
-import { type StoryNode } from "../stores/useEventStore";
+import { useStoryStore } from "../stores/useStoryStore";
+import { type StoryNode } from "../stores/useStoryStore";
 
 const { node } = defineProps<{ node: StoryNode }>();
-const store = useEventStore();
+const store = useStoryStore();
 
 const text = ref(node.text);
 
 const removeEnabled = computed(
-  () => store.getCurrentEvent()?.nodes.length !== 1
+  () => store.getCurrentStory()?.nodes.length !== 1
 );
 const updateText = () =>
-  store.updateNodeText(store.selectedEventId, node.id, text.value);
-const removeNode = () => store.removeNode(store.selectedEventId, node.id);
+  store.updateNodeText(store.selectedStoryId, node.id, text.value);
+const removeNode = () => store.removeNode(store.selectedStoryId, node.id);
 </script>
 
 <style scoped>
