@@ -6,6 +6,7 @@
       <template v-if="selectedItem">
         <NodeEditor v-if="selectedItem.type === 'node'" :node="selectedNode" />
         <StoryAttributeEditor v-if="selectedItem.type === 'story'" :story="selectedStory" />
+        <ArrowEditor v-if="selectedItem.type === 'arrow'" :arrow="selectedArrow" />
       </template>
     </div>
     <div v-else>스토리를 선택하세요</div>
@@ -13,12 +14,13 @@
 </template>
 
 <script setup lang="ts">
-import { useStoryStore, type Story, type StoryNode } from "../stores/useStoryStore";
+import { useStoryStore, type Story, type StoryArrow, type StoryNode } from "../stores/useStoryStore";
 import { storeToRefs } from "pinia";
 import { computed } from "vue";
 import NodeGraph from "./NodeGraph.vue";
 import NodeEditor from "./NodeEditor.vue";
 import StoryAttributeEditor from "./StoryAttributeEditor.vue";
+import ArrowEditor from "./ArrowEditor.vue";
 
 const store = useStoryStore();
 const { stories, selectedStoryId, selectedItem } = storeToRefs(store);
@@ -31,6 +33,9 @@ const selectedNode = computed(() =>
 );
 const selectedStory = computed(() =>
   stories.value.find((e) => e.id === selectedStoryId.value) as Story
+);
+const selectedArrow = computed(() =>
+  store.getCurrentArrowById(selectedItem.value?.id) as StoryArrow
 );
 </script>
 <style scoped>

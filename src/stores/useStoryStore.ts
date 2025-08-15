@@ -101,6 +101,10 @@ export const useStoryStore = defineStore("story", () => {
     const story = stories.value.find((e) => e.id === selectedStoryId.value);
     return story?.nodes.find((n) => n.id === nodeId);
   };
+  const getCurrentArrowById = (arrowId: string): StoryArrow | undefined => {
+    const story = stories.value.find((e) => e.id === selectedStoryId.value);
+    return story?.nodes.flatMap((node) => node.next).find((arrow) => arrow.id === arrowId);
+  };
 
 
   const selectNode = (nodeId: string) => (selectedItem.value = { type: "node", id: nodeId });
@@ -150,6 +154,7 @@ export const useStoryStore = defineStore("story", () => {
     getStoryById,
     getNodeById,
     getCurrentNodeById,
+    getCurrentArrowById,
     removeNode,
   };
 });

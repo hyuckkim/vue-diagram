@@ -2,22 +2,22 @@
   <div class="childs">
     <div
       class="child"
-      :style="{ backgroundColor: getIdColor(next) }"
-      v-for="next of props.children"
-      @click.stop="props.click(next)"
+      :style="{ backgroundColor: getIdColor(next.to) }"
+      v-for="next of props.next"
+      @click.stop="props.click(next.id)"
     ></div>
     <div v-if="props.selected" class="addchild" @click.stop="props.add">+</div>
   </div>
 </template>
 <script setup lang="ts">
-import { useStoryStore } from '../stores/useStoryStore';
+import { useStoryStore, type StoryArrow } from '../stores/useStoryStore';
 
 const props = defineProps<{
   selected?: boolean;
   node: { id: string; color?: string };
-  click: (id: string) => void;
+  click: (arrowId: string) => void;
   add: () => void;
-  children?: string[];
+  next: StoryArrow[]; // arrow id 배열
 }>();
 
 const store = useStoryStore();

@@ -7,15 +7,13 @@
       :node="node"
       :x="node.x"
       :y="node.y"
-      :click="selectNode"
+      :click="() => selectNode(node.id)"
       :selected="node.id === store.selectedItem?.id"
-      @select="selectNode(node.id)"
     >
       <NodeChildSet
-        v-if="node.children && node.children.length > 0"
         :node="node"
-        :children="node.children"
-        :click="selectNode"
+        :next="node.next"
+        :click="(id) => selectArrow(id)"
         :add="() => store.addChildNode(node.id, story.id)"
         :selected="node.id === store.selectedItem?.id"
       />
@@ -28,7 +26,6 @@ import { ref, computed } from "vue";
 import {
   useStoryStore,
   type Story,
-  type StoryNode,
 } from "../stores/useStoryStore";
 import NodeBlock from "./NodeBlock.vue";
 import { getDagreLayout } from "../utils/dagreLayout";
@@ -38,6 +35,7 @@ import NodeChildSet from "./NodeChildSet.vue";
 const { story } = defineProps<{ story: Story }>();
 const store = useStoryStore();
 const selectNode = (id: string) => store.toggleNode(id);
+const selectArrow = (id: string) => store.selectArrow(id);
 
 // 패닝 offset
 const panOffset = ref({ x: 0, y: 0 });
@@ -71,14 +69,6 @@ const unselect = () => {
   store.unselectItem();
 }
 
-function getNodeRelations(nodes: StoryNode[]) {
-  const childrenMap: Record<string, string[]> = {};
-  nodes.forEach((node) => {
-    childrenMap[node.id] = node.next.map((link) => link.to) ?? [];
-  });
-  return { childrenMap };
-}
-
 const nodesWithPos = computed(() => {
   const layout = getDagreLayout(story.nodes, {
     nodeWidth: NODE_W,
@@ -87,12 +77,10 @@ const nodesWithPos = computed(() => {
     nodesep: 10,
     ranksep: 20,
   });
-  const { childrenMap } = getNodeRelations(story.nodes);
   return layout.map((node) => ({
     ...node,
     x: node.x + panOffset.value.x,
     y: node.y + panOffset.value.y,
-    children: childrenMap[node.id],
   }));
 });
 
@@ -113,17 +101,17 @@ const lines = computed(() => {
     id: string;
   }[] = [];
   nodes.forEach((node) => {
-    node.children?.forEach((toId: string) => {
-      const toNode = nodeMap[toId];
+    node.next.forEach(({to: t}) => {
+      const toNode = nodeMap[t];
       if (!toNode) return;
       result.push({
         from: node.id,
-        to: toId,
+        to: t,
         x1: node.x + NODE_W / 4,
         y1: node.y + NODE_H / 2,
         x2: toNode.x + NODE_W / 4,
         y2: toNode.y + NODE_H / 2,
-        id: `${node.id}__${toId}`,
+        id: `${node.id}__${t}`,
       });
     });
   });
