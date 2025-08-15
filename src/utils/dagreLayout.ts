@@ -1,5 +1,5 @@
 import dagre from "@dagrejs/dagre";
-import type { EventNode } from "../stores/useEventStore";
+import type { EventArrow, EventNode } from "../stores/useEventStore";
 
 export interface DagreLayoutOptions {
   nodeWidth?: number;
@@ -28,8 +28,8 @@ export function getDagreLayout(
   });
   nodes.forEach((node) => {
     if (node.next && Array.isArray(node.next)) {
-      node.next.forEach((nextId: string) => {
-        g.setEdge(node.id, nextId);
+      node.next.forEach((link: EventArrow) => {
+        g.setEdge(link.from, link.to);
       });
     }
   });

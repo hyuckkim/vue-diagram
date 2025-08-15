@@ -10,9 +10,15 @@ export type EventNode = {
   id: string;
   title: string;
   text: string;
-  next: string[];
-  color: string; // New property added
+  next: EventArrow[];
+  color: string;
 };
+export interface EventArrow {
+  id: string; // from__to
+  from: string; // 출발 노드 id
+  to: string;   // 도착 노드 id
+}
+
 function generateLightColor() {
   const letters = '0123456789ABCDEF';
   let color = '#';
@@ -40,21 +46,28 @@ export const useEventStore = defineStore("event", () => {
           id: "node-1",
           title: "주인공이 숲에 들어간다",
           text: "앞에도 숲, 뒤에도 숲. 그야말로 사방이 숲입니다. \n들어가야겠죠...",
-          next: ["node-2", "node-3"],
+          next: [
+            { id: "node-1__node-2", from: "node-1", to: "node-2" },
+            { id: "node-1__node-3", from: "node-1", to: "node-3" },
+          ],
           color: "#FF5733",
         },
         {
           id: "node-2",
           title: "왼쪽 길로 간다",
           text: "책을 읽을 때 왼쪽부터 읽듯, 당신은 왼쪽을 선택했습니다. 맞는 선택일까요?",
-          next: ["node-4"],
+          next: [
+            { id: "node-2__node-4", from: "node-2", to: "node-4" },
+          ],
           color: "#33FF57",
         },
         {
           id: "node-3",
           title: "오른쪽 길로 간다",
           text: "누군가가, 오른 쪽이 옳은 쪽이라고 말했던 것 같습니다. 당신은 그가 옳은 말을 햇길 바라며 전진합니다.",
-          next: ["node-4"],
+          next: [
+            { id: "node-3__node-4", from: "node-3", to: "node-4" },
+          ],
           color: "#3357FF",
         },
         {
@@ -103,6 +116,13 @@ export const useEventStore = defineStore("event", () => {
     });
     selectedNodeId.value = nodeId;
   };
+  function createEventArrow(from: string, to: string): EventArrow {
+    return {
+      id: `${from}__${to}`,
+      from,
+      to,
+    };
+  }
   const addChildNode = (parentNodeId: string, eventId: string) => {
     const event = events.value.find((e) => e.id === eventId);
     if (!event) return;
@@ -117,7 +137,7 @@ export const useEventStore = defineStore("event", () => {
       color: generateLightColor(),
     };
     event.nodes.push(newNode);
-    parentNode.next.push(childNodeId);
+    parentNode.next.push(createEventArrow(parentNodeId, childNodeId));
     selectedNodeId.value = childNodeId;
   };
 
@@ -160,7 +180,7 @@ export const useEventStore = defineStore("event", () => {
 
     // Remove references to the node in other nodes' next arrays
     event.nodes.forEach((node) => {
-      node.next = node.next.filter((nextId) => nextId !== nodeId);
+      node.next = node.next.filter((link) => link.to !== nodeId);
     });
 
     // Unselect the node if it was selected

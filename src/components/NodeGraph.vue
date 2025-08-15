@@ -1,5 +1,19 @@
 <template>
   <div class="graph" @mousedown="onMouseDown">
+    <svg class="lines" width="100%" height="100%" style="position:absolute;top:0;left:0;z-index:0;pointer-events:auto">
+      <line
+        v-for="line in lines"
+        :key="line.id"
+        :x1="line.x1"
+        :y1="line.y1"
+        :x2="line.x2"
+        :y2="line.y2"
+        :stroke="line.id === selectedLine ? '#ff5252' : '#888'"
+        stroke-width="4"
+        @click.stop="selectLine(line.id)"
+        style="cursor:pointer;opacity:0.7;"
+      />
+    </svg>
     <NodeBlock
       v-for="node in nodesWithPos"
       :key="node.id"
@@ -7,7 +21,6 @@
       :x="node.x"
       :y="node.y"
       :children="node.children"
-      :child="node.child"
       :click="selectNode"
       :add="() => store.addChildNode(node.id, event.id)"
       :selected="node.id === store.selectedNodeId"
@@ -31,6 +44,11 @@ const panOffset = ref({ x: 0, y: 0 });
 const dragging = ref(false);
 const dragStart = ref({ x: 0, y: 0 });
 
+const selectedLine = ref<string | null>(null);
+
+const NODE_W = 220;
+const NODE_H = 60;
+
 const onMouseDown = (e: MouseEvent) => {
   dragging.value = true;
   dragStart.value.x = e.clientX - panOffset.value.x;
@@ -51,55 +69,77 @@ const eventEnd = () => {
   window.removeEventListener("mouseleave", eventEnd);
 };
 
-// child, children 정보 계산
 function getNodeRelations(nodes: EventNode[]) {
   const childrenMap: Record<string, string[]> = {};
-  const childMap: Record<string, string[]> = {};
   nodes.forEach((node) => {
-    childrenMap[node.id] = node.next ?? [];
-    node.next?.forEach((nextId: string) => {
-      if (!childMap[nextId]) childMap[nextId] = [];
-      childMap[nextId].push(node.id);
-    });
+    childrenMap[node.id] = node.next.map(link => link.to) ?? [];
   });
-  nodes.forEach((node) => {
-    if (!childMap[node.id]) childMap[node.id] = [];
-  });
-  return { childrenMap, childMap };
+  return { childrenMap };
 }
 
 const nodesWithPos = computed(() => {
   const layout = getDagreLayout(event.nodes, {
-    nodeWidth: 220,
-    nodeHeight: 60,
+    nodeWidth: NODE_W,
+    nodeHeight: NODE_H,
     rankdir: "LR",
     nodesep: 10,
     ranksep: 20,
   });
-  const { childrenMap, childMap } = getNodeRelations(event.nodes);
+  const { childrenMap } = getNodeRelations(event.nodes);
   return layout.map((node) => ({
     ...node,
     x: node.x + panOffset.value.x,
     y: node.y + panOffset.value.y,
     children: childrenMap[node.id],
-    child: childMap[node.id],
   }));
 });
+
+// 연결선 정보 계산
+const lines = computed(() => {
+  const nodes = nodesWithPos.value;
+  const nodeMap: Record<string, typeof nodes[0]> = {};
+  nodes.forEach((n) => { nodeMap[n.id] = n; });
+  const result: { from: string; to: string; x1: number; y1: number; x2: number; y2: number; id: string }[] = [];
+  nodes.forEach((node) => {
+    node.children?.forEach((toId: string) => {
+      const toNode = nodeMap[toId];
+      if (!toNode) return;
+      result.push({
+        from: node.id,
+        to: toId,
+        x1: node.x + NODE_W / 4,
+        y1: node.y + NODE_H / 2,
+        x2: toNode.x + NODE_W / 4,
+        y2: toNode.y + NODE_H / 2,
+        id: `${node.id}__${toId}`,
+      });
+    });
+  });
+  return result;
+});
+
+function selectLine(id: string) {
+  selectedLine.value = id;
+}
 </script>
 <style scoped>
 .graph {
   position: relative;
   width: 100%;
   height: 100%;
-  /* display: grid;  <-- 패닝을 위해 grid 제거 */
-  /* grid-auto-flow: row; */
-  /* grid-template-columns: repeat(auto-fill, 200px); */
-  /* grid-auto-rows: 100px; */
-  /* gap: 5px; */
   overflow: hidden;
   cursor: grab;
 }
 .graph:active {
   cursor: grabbing;
+}
+.lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: auto;
 }
 </style>
