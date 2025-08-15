@@ -19,7 +19,7 @@
         @click.stop="props.click(next)"
       ></div>
       <div
-        v-if="props.selected && props.children && props.children.length < 8"
+        v-if="props.selected"
         class="addchild"
         @click.stop="props.add"
       >
@@ -73,6 +73,10 @@ const idColor = (id: string) => store.getCurrentNodeById(id)?.color || "#ccc";
   width: 20px;
   height: 20px;
   border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
   transform: translateX(20px);
 }
 </style>
