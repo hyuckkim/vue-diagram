@@ -84,13 +84,6 @@ export const useStoryStore = defineStore("story", () => {
     selectedItem.value = { type: "node", id: newNode.id };
   };
 
-  const updateNodeText = (storyId: string, nodeId: string, text: string) => {
-    const story = stories.value.find((e) => e.id === storyId);
-    if (!story) return;
-    const node = story.nodes.find((n) => n.id === nodeId);
-    if (node) node.text = text;
-  };
-
   const getCurrentStory = (): Story | undefined => {
     return stories.value.find((e) => e.id === selectedStoryId.value);
   }
@@ -150,7 +143,6 @@ export const useStoryStore = defineStore("story", () => {
     getCurrentStory,
     addNode,
     addChildNode,
-    updateNodeText,
     selectNode,
     selectArrow,
     unselectItem,

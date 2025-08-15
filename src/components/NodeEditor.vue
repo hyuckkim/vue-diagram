@@ -12,27 +12,22 @@
       </button>
     </div>
     <div class="node-body">
-      <textarea v-model="text" rows="6" class="text-area"></textarea>
-      <button class="save-button" @click="updateText">저장</button>
+      <textarea v-model="node.text" rows="6" class="text-area"></textarea>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useStoryStore } from "../stores/useStoryStore";
 import { type StoryNode } from "../stores/useStoryStore";
 
 const { node } = defineProps<{ node: StoryNode }>();
 const store = useStoryStore();
 
-const text = ref(node.text);
-
 const removeEnabled = computed(
   () => store.getCurrentStory()?.nodes.length !== 1
 );
-const updateText = () =>
-  store.updateNodeText(store.selectedStoryId, node.id, text.value);
 const removeNode = () => store.removeNode(store.selectedStoryId, node.id);
 </script>
 
@@ -97,20 +92,5 @@ const removeNode = () => store.removeNode(store.selectedStoryId, node.id);
 
 .remove-button:active:not(:disabled) {
   background-color: #e60000;
-}
-
-.save-button {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-size: 0.8em;
-  align-self: flex-end;
-}
-
-.save-button:active {
-  background-color: #45a049;
 }
 </style>
