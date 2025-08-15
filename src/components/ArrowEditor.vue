@@ -7,19 +7,26 @@
     </label>
     <label>
       출발 노드
-      <input v-model="arrow.from" disabled />
+  <NodeBlock v-if="fromNode" :node="fromNode" :click="() => store.selectNode(fromNode?.id!)" :selected="false" />
+  <span v-else style="color:gray">(노드 없음)</span>
     </label>
     <label>
       도착 노드
-      <input v-model="arrow.to" disabled />
+  <NodeBlock v-if="toNode" :node="toNode" :click="() => store.selectNode(toNode?.id!)" :selected="false" />
+  <span v-else style="color:gray">(노드 없음)</span>
     </label>
   </div>
 </template>
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps, computed } from 'vue';
 import type { StoryArrow } from '../stores/useStoryStore';
+import { useStoryStore } from '../stores/useStoryStore';
+import NodeBlock from './NodeBlock.vue';
 
-defineProps<{ arrow: StoryArrow }>();
+const props = defineProps<{ arrow: StoryArrow }>();
+const store = useStoryStore();
+const fromNode = computed(() => store.getCurrentNodeById(props.arrow.from));
+const toNode = computed(() => store.getCurrentNodeById(props.arrow.to));
 </script>
 <style scoped>
 .arrow-editor {

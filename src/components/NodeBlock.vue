@@ -6,9 +6,7 @@
       borderWidth: props.selected ? '5px' : '3px',
       paddingLeft: props.selected ? '8px' : '10px',
       borderColor: props.node.color || '#ccc',
-      position: 'absolute',
-      left: (props.x ?? 0) + 'px',
-      top: (props.y ?? 0) + 'px',
+      ...props.style
     }"
   >
     {{ props.node.title || "(제목 없음)" }}
@@ -22,8 +20,7 @@ const props = defineProps<{
   selected?: boolean;
   node: StoryNode;
   click: (id: string) => void;
-  x?: number;
-  y?: number;
+  style?: Record<string, string | number>;
 }>();
 </script>
 <style scoped>

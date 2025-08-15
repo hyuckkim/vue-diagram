@@ -5,15 +5,14 @@
       v-for="node in nodesWithPos"
       :key="node.id"
       :node="node"
-      :x="node.x"
-      :y="node.y"
-      :click="() => selectNode(node.id)"
+      :click="() => store.selectNode(node.id)"
       :selected="node.id === store.selectedItem?.id"
+      :style="{ position: 'absolute', left: node.x + 'px', top: node.y + 'px' }"
     >
       <NodeChildSet
         :node="node"
         :next="node.next"
-        :click="(id) => selectArrow(id)"
+        :click="(id) => store.selectArrow(id)"
         :add="() => store.addChildNode(node.id, story.id)"
         :selected="node.id === store.selectedItem?.id"
       />
@@ -34,8 +33,6 @@ import NodeChildSet from "./NodeChildSet.vue";
 
 const { story } = defineProps<{ story: Story }>();
 const store = useStoryStore();
-const selectNode = (id: string) => store.toggleNode(id);
-const selectArrow = (id: string) => store.selectArrow(id);
 
 // 패닝 offset
 const panOffset = ref({ x: 0, y: 0 });
