@@ -22,12 +22,12 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { useEventStore, type Event, type EventNode } from "../stores/useEventStore";
+import { useEventStore, type Story, type StoryNode } from "../stores/useEventStore";
 import NodeBlock from "./NodeBlock.vue";
 import { getDagreLayout } from "../utils/dagreLayout";
 import ArrowLines from "./ArrowLines.vue";
 
-const { event } = defineProps<{ event: Event }>();
+const { event } = defineProps<{ event: Story }>();
 const store = useEventStore();
 const selectNode = (id: string) => store.toggleNode(id);
 
@@ -61,7 +61,7 @@ const eventEnd = () => {
   store.unselectItem();
 };
 
-function getNodeRelations(nodes: EventNode[]) {
+function getNodeRelations(nodes: StoryNode[]) {
   const childrenMap: Record<string, string[]> = {};
   nodes.forEach((node) => {
     childrenMap[node.id] = node.next.map(link => link.to) ?? [];

@@ -13,9 +13,9 @@
 </template>
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import type { Event } from '../stores/useEventStore';
+import type { Story } from '../stores/useEventStore';
 
-defineProps<{ event: Event }>();
+defineProps<{ event: Story }>();
 </script>
 <style scoped>
 .event-attribute-editor {

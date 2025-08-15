@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { useEventStore, type Event, type EventNode } from "../stores/useEventStore";
+import { useEventStore, type Story, type StoryNode } from "../stores/useEventStore";
 import { storeToRefs } from "pinia";
 import { computed } from "vue";
 import NodeGraph from "./NodeGraph.vue";
@@ -27,10 +27,10 @@ const currentEvent = computed(() =>
   events.value.find((e) => e.id === selectedEventId.value)
 );
 const selectedNode = computed(() =>
-  currentEvent.value?.nodes.find((n) => n.id === selectedItem.value?.id) as EventNode
+  currentEvent.value?.nodes.find((n) => n.id === selectedItem.value?.id) as StoryNode
 );
 const selectedEvent = computed(() =>
-  events.value.find((e) => e.id === selectedEventId.value) as Event
+  events.value.find((e) => e.id === selectedEventId.value) as Story
 );
 </script>
 <style scoped>

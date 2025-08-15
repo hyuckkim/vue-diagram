@@ -21,9 +21,9 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useEventStore } from "../stores/useEventStore";
-import { type EventNode } from "../stores/useEventStore";
+import { type StoryNode } from "../stores/useEventStore";
 
-const { node } = defineProps<{ node: EventNode }>();
+const { node } = defineProps<{ node: StoryNode }>();
 const store = useEventStore();
 
 const text = ref(node.text);

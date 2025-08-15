@@ -29,11 +29,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useEventStore, type EventNode } from "../stores/useEventStore";
+import { useEventStore, type StoryNode } from "../stores/useEventStore";
 
 const props = defineProps<{
   selected?: boolean;
-  node: EventNode;
+  node: StoryNode;
   click: (id: string) => void;
   add: () => void;
   x?: number;

@@ -6,10 +6,10 @@
 </template>
 
 <script setup lang="ts">
-import { type Event } from '../stores/useEventStore'
+import { type Story } from '../stores/useEventStore'
 
 defineProps<{
-  event: Event;
+  event: Story;
   selected: boolean;
 }>()
 </script>

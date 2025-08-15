@@ -1,5 +1,5 @@
-import { type Event } from "../stores/useEventStore"
-export const SampleEvent: Event =
+import { type Story } from "../stores/useEventStore"
+export const SampleEvent: Story =
 {
   id: "event-1",
   title: "첫 번째 이벤트",

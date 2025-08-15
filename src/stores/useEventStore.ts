@@ -2,19 +2,19 @@ import { defineStore } from "pinia";
 import { ref, type Ref } from "vue";
 import { SampleEvent } from "../utils/sampleEvent";
 
-export type Event = {
+export type Story = {
   id: string;
   title: string;
-  nodes: EventNode[];
+  nodes: StoryNode[];
 };
-export type EventNode = {
+export type StoryNode = {
   id: string;
   title: string;
   text: string;
-  next: EventArrow[];
+  next: StoryArrow[];
   color: string;
 };
-export interface EventArrow {
+export interface StoryArrow {
   id: string; // from__to
   from: string; // 출발 노드 id
   to: string;   // 도착 노드 id
@@ -42,7 +42,7 @@ function generateGUID(): string {
 }
 
 export const useEventStore = defineStore("event", () => {
-  const events: Ref<Event[]> = ref([SampleEvent]);
+  const events: Ref<Story[]> = ref([SampleEvent]);
 
   const selectedEventId = ref(events.value[0].id);
   const selectedItem = ref<SelectedItem>({ type: "event", id: events.value[0].id });
@@ -66,7 +66,7 @@ export const useEventStore = defineStore("event", () => {
     event.nodes.push(node);
     selectedItem.value = { type: "node", id: node.id };
   };
-  function createEventArrow(from: string, to: string): EventArrow {
+  function createEventArrow(from: string, to: string): StoryArrow {
     return {
       id: `${from}__${to}`,
       from,
@@ -78,7 +78,7 @@ export const useEventStore = defineStore("event", () => {
     if (!event) return;
     const parentNode = event.nodes.find((n) => n.id === parentNodeId);
     if (!parentNode) return;
-    const newNode: EventNode = emptyEventNode();
+    const newNode: StoryNode = emptyEventNode();
     event.nodes.push(newNode);
     parentNode.next.push(createEventArrow(parentNodeId, newNode.id));
     selectedItem.value = { type: "node", id: newNode.id };
@@ -91,20 +91,20 @@ export const useEventStore = defineStore("event", () => {
     if (node) node.text = text;
   };
 
-  const getCurrentEvent = (): Event | undefined => {
+  const getCurrentEvent = (): Story | undefined => {
     return events.value.find((e) => e.id === selectedEventId.value);
   }
-  const getEventById = (id: string): Event | undefined => {
+  const getEventById = (id: string): Story | undefined => {
     return events.value.find((event) => event.id === id);
   };
   const getNodeById = (
     eventId: string,
     nodeId: string
-  ): EventNode | undefined => {
+  ): StoryNode | undefined => {
     const event = events.value.find((e) => e.id === eventId);
     return event?.nodes.find((n) => n.id === nodeId);
   };
-  const getCurrentNodeById = (nodeId: string): EventNode | undefined => {
+  const getCurrentNodeById = (nodeId: string): StoryNode | undefined => {
     const event = events.value.find((e) => e.id === selectedEventId.value);
     return event?.nodes.find((n) => n.id === nodeId);
   };
@@ -161,7 +161,7 @@ export const useEventStore = defineStore("event", () => {
     removeNode,
   };
 });
-function emptyEventNode(): EventNode {
+function emptyEventNode(): StoryNode {
   return {
     id: generateGUID(),
     title: "새 장",

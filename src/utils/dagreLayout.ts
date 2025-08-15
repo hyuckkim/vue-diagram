@@ -1,5 +1,5 @@
 import dagre from "@dagrejs/dagre";
-import type { EventNode } from "../stores/useEventStore";
+import type { StoryNode } from "../stores/useEventStore";
 
 export interface DagreLayoutOptions {
   nodeWidth?: number;
@@ -11,7 +11,7 @@ export interface DagreLayoutOptions {
 }
 
 export function getDagreLayout(
-  nodes: EventNode[],
+  nodes: StoryNode[],
   options: DagreLayoutOptions = {}
 ) {
   const {

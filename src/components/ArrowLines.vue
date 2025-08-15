@@ -17,10 +17,10 @@
 
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue';
-import type { EventArrow } from '../stores/useEventStore';
+import type { StoryArrow } from '../stores/useEventStore';
 
 defineProps<{
-  arrows: Array<EventArrow & { x1: number; y1: number; x2: number; y2: number }>,
+  arrows: Array<StoryArrow & { x1: number; y1: number; x2: number; y2: number }>,
   selectedId?: string,
   width?: number | string,
   height?: number | string,
