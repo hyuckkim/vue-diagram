@@ -3,27 +3,34 @@
     <input class="title" v-model="currentEvent.title" placeholder="(제목 없음)">
     <div v-if="currentEvent">
       <NodeGraph :event="currentEvent" />
-      <NodeEditor v-if="selectedNode" :node="selectedNode" />
+      <template v-if="selectedItem">
+        <NodeEditor v-if="selectedItem.type === 'node'" :node="selectedNode" />
+        <EventAttributeEditor v-if="selectedItem.type === 'event'" :event="selectedEvent" />
+      </template>
     </div>
     <div v-else>이벤트를 선택하세요</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useEventStore } from "../stores/useEventStore";
+import { useEventStore, type Event, type EventNode } from "../stores/useEventStore";
 import { storeToRefs } from "pinia";
 import { computed } from "vue";
 import NodeGraph from "./NodeGraph.vue";
 import NodeEditor from "./NodeEditor.vue";
+import EventAttributeEditor from "./EventAttributeEditor.vue";
 
 const store = useEventStore();
-const { events, selectedEventId, selectedNodeId } = storeToRefs(store);
+const { events, selectedEventId, selectedItem } = storeToRefs(store);
 
 const currentEvent = computed(() =>
   events.value.find((e) => e.id === selectedEventId.value)
 );
 const selectedNode = computed(() =>
-  currentEvent.value?.nodes.find((n) => n.id === selectedNodeId.value)
+  currentEvent.value?.nodes.find((n) => n.id === selectedItem.value?.id) as EventNode
+);
+const selectedEvent = computed(() =>
+  events.value.find((e) => e.id === selectedEventId.value) as Event
 );
 </script>
 <style scoped>

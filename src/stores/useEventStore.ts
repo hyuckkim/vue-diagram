@@ -19,6 +19,10 @@ export interface EventArrow {
   from: string; // 출발 노드 id
   to: string;   // 도착 노드 id
 }
+export type SelectedItem =
+  | { type: "event"; id: string }
+  | { type: "node"; id: string }
+  | { type: "arrow"; id: string };
 
 function generateLightColor() {
   const letters = '0123456789ABCDEF';
@@ -41,25 +45,26 @@ export const useEventStore = defineStore("event", () => {
   const events: Ref<Event[]> = ref([SampleEvent]);
 
   const selectedEventId = ref(events.value[0].id);
-  const selectedNodeId: Ref<string | null> = ref(null);
+  const selectedItem = ref<SelectedItem>({ type: "event", id: events.value[0].id });
 
   const addEvent = () => {
     const id = generateGUID();
     events.value.push({ id, title: `새 이벤트`, nodes: [emptyEventNode()] });
     selectedEventId.value = id;
+    selectedItem.value = { type: "event", id };
   };
 
   const selectEvent = (id: string) => {
     selectedEventId.value = id;
-    selectedNodeId.value = null;
+    selectedItem.value = { type: "event", id };
   };
 
   const addNode = (eventId: string) => {
     const event = events.value.find((e) => e.id === eventId);
     if (!event) return;
-    const nodeId = generateGUID();
-    event.nodes.push(emptyEventNode());
-    selectedNodeId.value = nodeId;
+    const node = emptyEventNode();
+    event.nodes.push(node);
+    selectedItem.value = { type: "node", id: node.id };
   };
   function createEventArrow(from: string, to: string): EventArrow {
     return {
@@ -76,7 +81,7 @@ export const useEventStore = defineStore("event", () => {
     const newNode: EventNode = emptyEventNode();
     event.nodes.push(newNode);
     parentNode.next.push(createEventArrow(parentNodeId, newNode.id));
-    selectedNodeId.value = newNode.id;
+    selectedItem.value = { type: "node", id: newNode.id };
   };
 
   const updateNodeText = (eventId: string, nodeId: string, text: string) => {
@@ -105,9 +110,18 @@ export const useEventStore = defineStore("event", () => {
   };
 
 
-  const selectNode = (nodeId: string) => (selectedNodeId.value = nodeId);
-  const unselectNode = () => (selectedNodeId.value = null);
-  const toggleNode = (nodeId: string) => (selectedNodeId.value = selectedNodeId.value === nodeId ? null : nodeId);
+  const selectNode = (nodeId: string) => (selectedItem.value = { type: "node", id: nodeId });
+  const selectArrow = (arrowId: string) => (selectedItem.value = { type: "arrow", id: arrowId });
+  const unselectItem = () => {
+    selectedItem.value = { type: "event", id: selectedEventId.value };
+  };
+  const toggleNode = (nodeId: string) => {
+    if (selectedItem.value?.type === "node" && selectedItem.value.id === nodeId) {
+      selectedItem.value = { type: "event", id: selectedEventId.value };
+    } else {
+      selectedItem.value = { type: "node", id: nodeId };
+    }
+  };
 
   const removeNode = (eventId: string, nodeId: string) => {
     const event = events.value.find((e) => e.id === eventId);
@@ -122,15 +136,15 @@ export const useEventStore = defineStore("event", () => {
     });
 
     // Unselect the node if it was selected
-    if (selectedNodeId.value === nodeId) {
-      selectedNodeId.value = null;
+    if (selectedItem.value?.type === "node" && selectedItem.value.id === nodeId) {
+      selectedItem.value = { type: "event", id: selectedEventId.value };
     }
   };
 
   return {
     events,
     selectedEventId,
-    selectedNodeId,
+    selectedItem,
     addEvent,
     selectEvent,
     getCurrentEvent,
@@ -138,7 +152,8 @@ export const useEventStore = defineStore("event", () => {
     addChildNode,
     updateNodeText,
     selectNode,
-    unselectNode,
+    selectArrow,
+    unselectItem,
     toggleNode,
     getEventById,
     getNodeById,

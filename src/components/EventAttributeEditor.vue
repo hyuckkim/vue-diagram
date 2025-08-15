@@ -1,0 +1,38 @@
+<template>
+  <div class="event-attribute-editor">
+    <h3>이벤트 속성 편집</h3>
+    <label>
+      제목
+      <input v-model="event.title" />
+    </label>
+    <label>
+      ID
+      <input v-model="event.id" disabled />
+    </label>
+  </div>
+</template>
+<script setup lang="ts">
+import { defineProps } from 'vue';
+import type { Event } from '../stores/useEventStore';
+
+defineProps<{ event: Event }>();
+</script>
+<style scoped>
+.event-attribute-editor {
+  padding: 1em;
+  background: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+label {
+  display: block;
+  margin-bottom: 1em;
+}
+input {
+  width: 100%;
+  padding: 0.5em;
+  margin-top: 0.2em;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+</style>

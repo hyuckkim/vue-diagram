@@ -14,7 +14,7 @@
       :children="node.children"
       :click="selectNode"
       :add="() => store.addChildNode(node.id, event.id)"
-      :selected="node.id === store.selectedNodeId"
+      :selected="node.id === store.selectedItem?.id"
       @select="selectNode(node.id)"
     />
   </div>
@@ -57,6 +57,8 @@ const eventEnd = () => {
   window.removeEventListener("mousemove", onMouseMove);
   window.removeEventListener("mouseup", eventEnd);
   window.removeEventListener("mouseleave", eventEnd);
+
+  store.unselectItem();
 };
 
 function getNodeRelations(nodes: EventNode[]) {
